@@ -9,4 +9,4 @@ variable "credentials_file" {
 variable "cluster_name" {
   default = "my-gke-cluster"
 }
-#test
+#test 1
