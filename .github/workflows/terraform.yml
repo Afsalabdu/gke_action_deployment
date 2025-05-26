@@ -1,16 +1,13 @@
-name: Deploy or Destroy GKE with Terraform
+name: Deploy GKE with Terraform
 
 on:
-  workflow_dispatch:
-    inputs:
-      destroy:
-        description: 'Set to true to destroy the infrastructure'
-        required: false
-        default: 'false'
+  push:
+    branches:
+      - main
 
 jobs:
   terraform:
-    name: Terraform Plan & Apply/Destroy
+    name: Terraform Plan & Apply
     runs-on: ubuntu-latest
 
     env:
@@ -44,18 +41,5 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -var="project_id=${GCP_PROJECT}" -var="region=${GCP_REGION}" -var="zone=${GCP_ZONE}"
 
-      - name: Terraform Apply or Destroy
-        run: |
-          if [ "${{ github.event.inputs.destroy }}" == "true" ]; then
-            echo "Destroying infrastructure..."
-            terraform destroy -auto-approve \
-              -var="project_id=${GCP_PROJECT}" \
-              -var="region=${GCP_REGION}" \
-              -var="zone=${GCP_ZONE}"
-          else
-            echo "Applying infrastructure..."
-            terraform apply -auto-approve \
-              -var="project_id=${GCP_PROJECT}" \
-              -var="region=${GCP_REGION}" \
-              -var="zone=${GCP_ZONE}"
-          fi
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -var="project_id=${GCP_PROJECT}" -var="region=${GCP_REGION}" -var="zone=${GCP_ZONE}"
